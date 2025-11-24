@@ -1,0 +1,1064 @@
+---
+permalink: /404.html
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Camcookie Music</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* Layout: fullscreen panels */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #0f0f10;
+      color: #e6e6e6;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    .app {
+      height: 100%;
+      display: grid;
+      grid-template-rows: 64px 1fr 64px;
+      grid-template-columns: 100%;
+    }
+    .header, .footer {
+      background: #131316;
+      border-bottom: 1px solid #222;
+      border-top: 1px solid #222;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+    .header h1 {
+      font-size: 18px;
+      margin: 0;
+      color: #1db954;
+      letter-spacing: 0.5px;
+    }
+    .header .actions, .footer .actions {
+      display: flex;
+      gap: 8px;
+    }
+    .main {
+      position: relative;
+      overflow: hidden;
+      background: #0f0f10;
+    }
+
+    /* Fullscreen panels stack; only one visible at a time */
+    .panel {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow: auto;
+      padding: 16px;
+    }
+    .panel.active {
+      display: block;
+    }
+
+    /* Generic controls */
+    button, input, select {
+      background: #1db954;
+      color: #ffffff;
+      border: none;
+      padding: 10px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    button.secondary {
+      background: #2b2b30;
+      color: #e6e6e6;
+      border: 1px solid #3a3a40;
+    }
+    button.link {
+      background: transparent;
+      color: #1db954;
+      border: 1px solid #1db954;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    input, select {
+      background: #121216;
+      border: 1px solid #2a2a30;
+      color: #e6e6e6;
+      border-radius: 6px;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      background: #121216;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .card h3 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+    }
+    .muted {
+      color: #a0a0a5;
+      font-size: 12px;
+    }
+    .divider {
+      height: 1px;
+      background: #1f1f25;
+      margin: 16px 0;
+    }
+    .section-title {
+      font-size: 16px;
+      margin: 0 0 12px 0;
+      color: #e6e6e6;
+      letter-spacing: 0.4px;
+    }
+
+    /* Now playing panel specifics */
+    .now-playing {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 16px;
+    }
+    .artwork {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #222;
+      background: #0d0d10;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+    }
+    .lyrics-box {
+      background: #121216;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 12px;
+      height: 260px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    /* Player controls */
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Share URL box */
+    .share-box {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .share-url {
+      background: #0f0f10;
+      border: 1px solid #2a2a2f;
+      padding: 8px 10px;
+      border-radius: 6px;
+      color: #ddd;
+      word-break: break-all;
+    }
+
+    /* Hidden */
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <h1>Camcookie Music</h1>
+      <div class="actions">
+        <button id="loginBtn">Login with Spotify</button>
+        <button id="logoutBtn" class="secondary">Logout</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- Home panel: create stations, quick links, specials -->
+      <section id="panel-home" class="panel active">
+        <h2 class="section-title">Home</h2>
+
+        <div class="row">
+          <input id="seedInput" placeholder="Artist, track, or genre seed" />
+          <select id="seedType">
+            <option value="track">Track</option>
+            <option value="artist">Artist</option>
+            <option value="album">Album</option>
+          </select>
+          <button id="createStationBtn">Create Station</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2 class="section-title">Your Stations</h2>
+        <div id="stationsGrid" class="grid"></div>
+
+        <div class="divider"></div>
+
+        <h2 class="section-title">Specials</h2>
+        <div id="specialsGrid" class="grid"></div>
+      </section>
+
+      <!-- Station panel: Pandora-style radio -->
+      <section id="panel-station" class="panel">
+        <h2 class="section-title">Station</h2>
+        <div class="row">
+          <button id="stationPlayBtn">Play</button>
+          <button id="stationSkipBtn" class="secondary">Skip</button>
+          <button id="stationBackBtn" class="secondary">Back</button>
+          <button id="stationLikeBtn">Like</button>
+          <button id="stationDislikeBtn" class="secondary">Dislike</button>
+        </div>
+
+        <div class="now-playing">
+          <img id="stationArtwork" class="artwork" alt="Artwork" />
+          <div>
+            <div id="stationTrackTitle" style="font-size:18px; margin-bottom:6px;"></div>
+            <div id="stationTrackArtist" class="muted" style="margin-bottom:12px;"></div>
+            <div class="lyrics-box" id="stationLyrics"></div>
+
+            <div class="divider"></div>
+
+            <div class="controls">
+              <button id="toArtistBtn" class="link">Go to Artist</button>
+              <button id="toTrackBtn" class="link">Go to Track</button>
+              <button id="toPlaylistBtn" class="link">Go to Playlist</button>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="share-box">
+              <div class="share-url" id="stationShareUrl"></div>
+              <button id="copyStationUrlBtn" class="secondary">Copy URL</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2 class="section-title">History</h2>
+        <div id="historyGrid" class="grid"></div>
+      </section>
+
+      <!-- Artist panel -->
+      <section id="panel-artist" class="panel">
+        <h2 class="section-title">Artist</h2>
+        <div class="row">
+          <button id="artistStartStationBtn">Start Station</button>
+          <button id="artistFollowBtn" class="secondary">Follow</button>
+          <button id="artistUnfollowBtn" class="secondary">Unfollow</button>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Top Tracks</h3>
+            <div id="artistTopTracks" class="grid"></div>
+          </div>
+          <div class="card">
+            <h3>Playlists Featuring Artist</h3>
+            <div id="artistPlaylists" class="grid"></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="share-box">
+          <div class="share-url" id="artistShareUrl"></div>
+          <button id="copyArtistUrlBtn" class="secondary">Copy URL</button>
+        </div>
+      </section>
+
+      <!-- Track panel -->
+      <section id="panel-track" class="panel">
+        <h2 class="section-title">Track</h2>
+        <div class="row">
+          <button id="trackPlayBtn">Play</button>
+          <button id="trackAddToPlaylistBtn" class="secondary">Add to Playlist</button>
+          <button id="trackLikeBtn">Like</button>
+          <button id="trackDislikeBtn" class="secondary">Dislike</button>
+        </div>
+
+        <div class="now-playing">
+          <img id="trackArtwork" class="artwork" alt="Artwork" />
+          <div>
+            <div id="trackTitle" style="font-size:18px; margin-bottom:6px;"></div>
+            <div id="trackArtist" class="muted" style="margin-bottom:12px;"></div>
+            <div class="lyrics-box" id="trackLyrics"></div>
+
+            <div class="divider"></div>
+            <div class="share-box">
+              <div class="share-url" id="trackShareUrl"></div>
+              <button id="copyTrackUrlBtn" class="secondary">Copy URL</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Playlist panel -->
+      <section id="panel-playlist" class="panel">
+        <h2 class="section-title">Playlist</h2>
+        <div class="row">
+          <input id="newPlaylistName" placeholder="Playlist name" />
+          <button id="createPlaylistBtn">Create Playlist</button>
+        </div>
+        <div id="playlistTracks" class="grid"></div>
+
+        <div class="divider"></div>
+        <div class="share-box">
+          <div class="share-url" id="playlistShareUrl"></div>
+          <button id="copyPlaylistUrlBtn" class="secondary">Copy URL</button>
+        </div>
+      </section>
+
+      <!-- Specials panel -->
+      <section id="panel-special" class="panel">
+        <h2 class="section-title">Camcookie Specials</h2>
+        <div id="specialDetail" class="card"></div>
+        <div class="divider"></div>
+        <div class="share-box">
+          <div class="share-url" id="specialShareUrl"></div>
+          <button id="copySpecialUrlBtn" class="secondary">Copy URL</button>
+        </div>
+      </section>
+
+      <!-- OAuth error or generic error panel -->
+      <section id="panel-error" class="panel">
+        <h2 class="section-title">Error</h2>
+        <div id="errorMessage" class="card"></div>
+      </section>
+    </div>
+
+    <div class="footer">
+      <div class="actions">
+        <button id="homeBtn" class="secondary">Home</button>
+        <button id="openPlayerBtn">Open Player</button>
+        <button id="pausePlayerBtn" class="secondary">Pause</button>
+        <button id="nextTrackBtn" class="secondary">Next</button>
+        <button id="previousTrackBtn" class="secondary">Previous</button>
+      </div>
+      <div class="muted">Camcookie ©</div>
+    </div>
+  </div>
+
+  <script>
+    // =============================
+    // Config and global state
+    // =============================
+
+    const CLIENT_ID = "aabe0fbb5071499d8e0681ad57a824c8"; // Safe to expose
+    const REDIRECT_URI = "https://camcookiem.github.io/music/"; // OAuth redirect URI (this page)
+    const SCOPES = [
+      "user-read-playback-state",
+      "user-modify-playback-state",
+      "user-read-currently-playing",
+      "user-library-read",
+      "user-library-modify",
+      "playlist-read-private",
+      "playlist-modify-public",
+      "playlist-modify-private",
+      "user-top-read"
+    ].join(" ");
+
+    let accessToken = null;
+    let currentDeviceId = null;
+    let specials = null; // Loaded from /music/specials.json
+    let history = []; // Simple in-memory play history
+
+    // =============================
+    // Utility helpers
+    // =============================
+
+    function showPanel(id) {
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      const el = document.getElementById(id);
+      if (el) el.classList.add("active");
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+
+    function viewUrl(path) {
+      return `https://camcookiem.github.io/music${path}`;
+    }
+
+    function setShareUrl(elId, path) {
+      const el = document.getElementById(elId);
+      if (el) el.textContent = viewUrl(path);
+    }
+
+    function api(path, init = {}) {
+      if (!accessToken) throw new Error("No access token");
+      const url = `https://api.spotify.com/v1${path}`;
+      const headers = {
+        "Authorization": `Bearer ${accessToken}`
+      };
+      if (init.headers) Object.assign(headers, init.headers);
+      return fetch(url, { ...init, headers });
+    }
+
+    function imgOrFallback(images) {
+      if (images && images.length) return images[0].url;
+      return "";
+    }
+
+    // =============================
+    // OAuth (Implicit Grant)
+    // =============================
+
+    function login() {
+      const authUrl =
+        "https://accounts.spotify.com/authorize" +
+        `?response_type=token` +
+        `&client_id=${encodeURIComponent(CLIENT_ID)}` +
+        `&scope=${encodeURIComponent(SCOPES)}` +
+        `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
+        `&state=${encodeURIComponent("camcookie")}`;
+      window.location.href = authUrl;
+    }
+
+    function logout() {
+      localStorage.removeItem("spotify_access_token");
+      accessToken = null;
+      // Keep the current URL path, but force user to login again
+      alert("Logged out");
+    }
+
+    function readTokenFromHash() {
+      if (window.location.hash && window.location.hash.startsWith("#")) {
+        const params = new URLSearchParams(window.location.hash.substring(1));
+        const token = params.get("access_token");
+        const type = params.get("token_type");
+        const expires = params.get("expires_in");
+        if (token) {
+          localStorage.setItem("spotify_access_token", token);
+          // Clean hash
+          historyPushSamePath();
+          return token;
+        }
+      }
+      return null;
+    }
+
+    function historyPushSamePath() {
+      const url = new URL(window.location.href);
+      url.hash = "";
+      history.pushState({}, "", url.toString());
+    }
+
+    function ensureToken() {
+      accessToken = localStorage.getItem("spotify_access_token") || readTokenFromHash();
+      if (!accessToken) {
+        showPanel("panel-home");
+      }
+      return !!accessToken;
+    }
+
+    // =============================
+    // Web Playback SDK boot
+    // =============================
+
+    function loadPlaybackSdk() {
+      return new Promise((resolve) => {
+        const scriptId = "spotify-player-sdk";
+        if (document.getElementById(scriptId)) return resolve();
+        const s = document.createElement("script");
+        s.id = scriptId;
+        s.src = "https://sdk.scdn.co/spotify-player.js";
+        s.async = true;
+        document.body.appendChild(s);
+        window.onSpotifyWebPlaybackSDKReady = () => resolve();
+      });
+    }
+
+    async function initPlayer() {
+      await loadPlaybackSdk();
+      const player = new Spotify.Player({
+        name: "Camcookie Radio",
+        getOAuthToken: cb => cb(accessToken),
+        volume: 0.5
+      });
+
+      player.addListener("ready", ({ device_id }) => {
+        currentDeviceId = device_id;
+      });
+
+      player.addListener("player_state_changed", async (state) => {
+        // Track history minimally
+        if (state && state.track_window && state.track_window.current_track) {
+          const t = state.track_window.current_track;
+          const entry = { id: t.id, name: t.name, artist: t.artists?.[0]?.name || "" };
+          const last = history[history.length - 1];
+          if (!last || last.id !== entry.id) history.push(entry);
+          renderHistory();
+        }
+      });
+
+      player.connect();
+      return player;
+    }
+
+    async function transferPlaybackToCurrentDevice() {
+      if (!currentDeviceId) return;
+      await api("/me/player", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ device_ids: [currentDeviceId], play: false })
+      });
+    }
+
+    // =============================
+    // Router
+    // =============================
+
+    function parseRoute() {
+      // We are under /music/404.html or /music/, but we want to interpret any path under /music/*
+      const origin = "https://camcookiem.github.io";
+      const base = "/music";
+      let p = window.location.pathname;
+      // Normalize
+      if (!p.startsWith(base)) return { view: "home" };
+      const parts = p.slice(base.length).split("/").filter(Boolean); // after /music
+      // Patterns:
+      // / -> home
+      // /station/{seedType}/{seedId}
+      // /artist/{artistId}
+      // /track/{trackId}
+      // /playlist/{playlistId}
+      // /special/{slug}
+      if (parts.length === 0) return { view: "home" };
+      const [head, a, b] = parts;
+      switch (head) {
+        case "station":
+          return { view: "station", seedType: a, seedId: b };
+        case "artist":
+          return { view: "artist", artistId: a };
+        case "track":
+          return { view: "track", trackId: a };
+        case "playlist":
+          return { view: "playlist", playlistId: a };
+        case "special":
+          return { view: "special", slug: a };
+        default:
+          return { view: "home" };
+      }
+    }
+
+    function navigate(path) {
+      const url = viewUrl(path);
+      window.history.pushState({}, "", url);
+      render();
+    }
+
+    window.addEventListener("popstate", () => render());
+
+    // =============================
+    // Renderers
+    // =============================
+
+    async function render() {
+      if (!ensureToken()) {
+        // Show login prompt
+        showPanel("panel-home");
+        return;
+      }
+
+      // Ensure player is ready
+      await initPlayer();
+      await transferPlaybackToCurrentDevice();
+
+      // Load specials
+      if (!specials) {
+        specials = await loadSpecials();
+      }
+
+      const route = parseRoute();
+      switch (route.view) {
+        case "home":
+          await renderHome();
+          break;
+        case "station":
+          await renderStation(route.seedType, route.seedId);
+          break;
+        case "artist":
+          await renderArtist(route.artistId);
+          break;
+        case "track":
+          await renderTrack(route.trackId);
+          break;
+        case "playlist":
+          await renderPlaylist(route.playlistId);
+          break;
+        case "special":
+          await renderSpecial(route.slug);
+          break;
+        default:
+          await renderHome();
+          break;
+      }
+    }
+
+    async function renderHome() {
+      showPanel("panel-home");
+      await renderStationsGrid();
+      await renderSpecialsGrid();
+    }
+
+    async function renderStationsGrid() {
+      const el = document.getElementById("stationsGrid");
+      el.innerHTML = "";
+      // Example: suggest from user top artists
+      const res = await api("/me/top/artists?limit=12");
+      const data = await res.json();
+      (data.items || []).forEach(artist => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h3>${artist.name}</h3>
+          <div class="muted">Start station from artist</div>
+          <div class="row">
+            <button class="link">Open</button>
+            <button class="secondary">Share</button>
+          </div>
+        `;
+        const openBtn = card.querySelector("button.link");
+        const shareBtn = card.querySelector("button.secondary");
+        openBtn.onclick = () => navigate(`/station/artist/${artist.id}`);
+        shareBtn.onclick = () => copyText(viewUrl(`/station/artist/${artist.id}`));
+        el.appendChild(card);
+      });
+    }
+
+    async function renderSpecialsGrid() {
+      const el = document.getElementById("specialsGrid");
+      el.innerHTML = "";
+      (specials?.list || []).forEach(sp => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h3>${sp.title}</h3>
+          <div class="muted">${sp.description || ""}</div>
+          <div class="row">
+            <button class="link">Open</button>
+            <button class="secondary">Share</button>
+          </div>
+        `;
+        card.querySelector("button.link").onclick = () => navigate(`/special/${encodeURIComponent(sp.slug)}`);
+        card.querySelector("button.secondary").onclick = () => copyText(viewUrl(`/special/${encodeURIComponent(sp.slug)}`));
+        el.appendChild(card);
+      });
+    }
+
+    async function renderStation(seedType, seedIdOrQuery) {
+      showPanel("panel-station");
+      setShareUrl("stationShareUrl", `/station/${seedType}/${seedIdOrQuery}`);
+
+      // Resolve a list of candidate tracks based on seed using search or related endpoints
+      let tracks = [];
+      if (seedType === "track" && seedIdOrQuery) {
+        const t = await api(`/tracks/${seedIdOrQuery}`).then(r => r.json());
+        const rel = await api(`/recommendations?seed_tracks=${seedIdOrQuery}&limit=20`).then(r => r.json());
+        tracks = rel.tracks || [];
+      } else if (seedType === "artist" && seedIdOrQuery) {
+        const rel = await api(`/recommendations?seed_artists=${seedIdOrQuery}&limit=20`).then(r => r.json());
+        tracks = rel.tracks || [];
+      } else {
+        // Treat as a search query for a track seed
+        const s = await api(`/search?q=${encodeURIComponent(seedIdOrQuery)}&type=track&limit=1`).then(r => r.json());
+        const seedTrack = s.tracks?.items?.[0];
+        if (seedTrack) {
+          const rel = await api(`/recommendations?seed_tracks=${seedTrack.id}&limit=20`).then(r => r.json());
+          tracks = rel.tracks || [];
+        }
+      }
+
+      // Play first track to start station
+      if (tracks.length) {
+        await playUris(tracks.map(t => t.uri));
+        await updateStationNowPlaying();
+      }
+
+      // Wire station controls
+      document.getElementById("stationPlayBtn").onclick = () => togglePlay();
+      document.getElementById("stationSkipBtn").onclick = () => nextTrack();
+      document.getElementById("stationBackBtn").onclick = () => previousTrack();
+      document.getElementById("stationLikeBtn").onclick = () => likeCurrent();
+      document.getElementById("stationDislikeBtn").onclick = () => dislikeCurrent();
+
+      document.getElementById("toArtistBtn").onclick = async () => {
+        const cur = await getCurrentTrack();
+        if (cur?.artists?.[0]?.id) navigate(`/artist/${cur.artists[0].id}`);
+      };
+      document.getElementById("toTrackBtn").onclick = async () => {
+        const cur = await getCurrentTrack();
+        if (cur?.id) navigate(`/track/${cur.id}`);
+      };
+      document.getElementById("toPlaylistBtn").onclick = async () => {
+        const me = await api("/me").then(r => r.json());
+        const res = await api("/users/" + me.id + "/playlists", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: "Camcookie Station Favorites" })
+        }).then(r => r.json());
+        if (res?.id) navigate(`/playlist/${res.id}`);
+      };
+    }
+
+    async function updateStationNowPlaying() {
+      const cur = await getCurrentTrack();
+      if (!cur) return;
+      document.getElementById("stationTrackTitle").textContent = cur.name;
+      document.getElementById("stationTrackArtist").textContent = cur.artists?.map(a => a.name).join(", ") || "";
+      document.getElementById("stationArtwork").src = imgOrFallback(cur.album?.images);
+
+      // Lyrics attempt (may not be available for all tracks)
+      try {
+        const lyr = await api(`/tracks/${cur.id}/lyrics`).then(r => r.json());
+        document.getElementById("stationLyrics").textContent = lyr?.lyrics || "Lyrics unavailable.";
+      } catch {
+        document.getElementById("stationLyrics").textContent = "Lyrics unavailable.";
+      }
+      renderHistory();
+    }
+
+    async function renderArtist(artistId) {
+      showPanel("panel-artist");
+      setShareUrl("artistShareUrl", `/artist/${artistId}`);
+
+      // Top tracks
+      const top = await api(`/artists/${artistId}/top-tracks?market=US`).then(r => r.json());
+      const topEl = document.getElementById("artistTopTracks");
+      topEl.innerHTML = "";
+      (top.tracks || []).forEach(t => {
+        const c = document.createElement("div");
+        c.className = "card";
+        c.innerHTML = `
+          <h3>${t.name}</h3>
+          <div class="muted">${t.artists?.map(a => a.name).join(", ")}</div>
+          <div class="row">
+            <button class="link">Open Track</button>
+            <button class="secondary">Play</button>
+          </div>
+        `;
+        c.querySelector("button.link").onclick = () => navigate(`/track/${t.id}`);
+        c.querySelector("button.secondary").onclick = () => playUris([t.uri]);
+        topEl.appendChild(c);
+      });
+
+      // Playlists that may feature artist: search
+      const searchPl = await api(`/search?q=${encodeURIComponent("artist:" + artistId)}&type=playlist&limit=12`).then(r => r.json()).catch(() => ({ playlists: { items: [] }}));
+      const plEl = document.getElementById("artistPlaylists");
+      plEl.innerHTML = "";
+      (searchPl.playlists?.items || []).forEach(p => {
+        const c = document.createElement("div");
+        c.className = "card";
+        c.innerHTML = `
+          <h3>${p.name}</h3>
+          <div class="muted">By ${p.owner?.display_name || "Unknown"}</div>
+          <div class="row">
+            <button class="link">Open</button>
+            <button class="secondary">Share</button>
+          </div>
+        `;
+        c.querySelector("button.link").onclick = () => navigate(`/playlist/${p.id}`);
+        c.querySelector("button.secondary").onclick = () => copyText(viewUrl(`/playlist/${p.id}`));
+        plEl.appendChild(c);
+      });
+
+      // Follow/unfollow
+      document.getElementById("artistFollowBtn").onclick = () => api(`/me/following?type=artist&ids=${artistId}`, { method: "PUT" });
+      document.getElementById("artistUnfollowBtn").onclick = () => api(`/me/following?type=artist&ids=${artistId}`, { method: "DELETE" });
+      document.getElementById("artistStartStationBtn").onclick = () => navigate(`/station/artist/${artistId}`);
+    }
+
+    async function renderTrack(trackId) {
+      showPanel("panel-track");
+      setShareUrl("trackShareUrl", `/track/${trackId}`);
+
+      const t = await api(`/tracks/${trackId}`).then(r => r.json());
+      document.getElementById("trackTitle").textContent = t.name;
+      document.getElementById("trackArtist").textContent = t.artists?.map(a => a.name).join(", ") || "";
+      document.getElementById("trackArtwork").src = imgOrFallback(t.album?.images);
+
+      try {
+        const lyr = await api(`/tracks/${trackId}/lyrics`).then(r => r.json());
+        document.getElementById("trackLyrics").textContent = lyr?.lyrics || "Lyrics unavailable.";
+      } catch {
+        document.getElementById("trackLyrics").textContent = "Lyrics unavailable.";
+      }
+
+      document.getElementById("trackPlayBtn").onclick = () => playUris([t.uri]);
+      document.getElementById("trackAddToPlaylistBtn").onclick = async () => {
+        const me = await api("/me").then(r => r.json());
+        const pl = await api(`/users/${me.id}/playlists`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: "Camcookie Favorites" })
+        }).then(r => r.json());
+        await api(`/playlists/${pl.id}/tracks`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ uris: [t.uri] })
+        });
+        navigate(`/playlist/${pl.id}`);
+      };
+      document.getElementById("trackLikeBtn").onclick = () => api(`/me/tracks?ids=${trackId}`, { method: "PUT" });
+      document.getElementById("trackDislikeBtn").onclick = () => api(`/me/tracks?ids=${trackId}`, { method: "DELETE" });
+    }
+
+    async function renderPlaylist(playlistId) {
+      showPanel("panel-playlist");
+      setShareUrl("playlistShareUrl", `/playlist/${playlistId}`);
+
+      const pl = await api(`/playlists/${playlistId}`).then(r => r.json());
+      const el = document.getElementById("playlistTracks");
+      el.innerHTML = "";
+      (pl.tracks?.items || []).forEach(item => {
+        const t = item.track;
+        const c = document.createElement("div");
+        c.className = "card";
+        c.innerHTML = `
+          <h3>${t.name}</h3>
+          <div class="muted">${t.artists?.map(a => a.name).join(", ")}</div>
+          <div class="row">
+            <button class="link">Open Track</button>
+            <button class="secondary">Play</button>
+          </div>
+        `;
+        c.querySelector("button.link").onclick = () => navigate(`/track/${t.id}`);
+        c.querySelector("button.secondary").onclick = () => playUris([t.uri]);
+        el.appendChild(c);
+      });
+
+      // Create new playlist button
+      document.getElementById("createPlaylistBtn").onclick = async () => {
+        const name = document.getElementById("newPlaylistName").value.trim();
+        if (!name) return;
+        const me = await api("/me").then(r => r.json());
+        const created = await api(`/users/${me.id}/playlists`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name })
+        }).then(r => r.json());
+        navigate(`/playlist/${created.id}`);
+      };
+    }
+
+    async function renderSpecial(slug) {
+      showPanel("panel-special");
+      setShareUrl("specialShareUrl", `/special/${encodeURIComponent(slug)}`);
+
+      const sp = (specials?.list || []).find(s => s.slug === slug);
+      const box = document.getElementById("specialDetail");
+      if (!sp) {
+        box.innerHTML = `<div class="muted">Special not found.</div>`;
+        return;
+      }
+      // Specials schema example:
+      // { slug, title, description, tracks: [ { uri }, ... ], artists: [ { id }, ... ], playlists: [ { id }, ... ] }
+      const parts = [];
+      parts.push(`<h3>${sp.title}</h3>`);
+      if (sp.description) parts.push(`<div class="muted">${sp.description}</div>`);
+      parts.push(`<div class="divider"></div>`);
+
+      if (sp.tracks && sp.tracks.length) {
+        parts.push(`<div class="row"><button id="specialPlayAll">Play All Tracks</button></div>`);
+      }
+      if (sp.artists && sp.artists.length) {
+        parts.push(`<div class="row"><button id="specialStartStations">Start Stations from Artists</button></div>`);
+      }
+      if (sp.playlists && sp.playlists.length) {
+        parts.push(`<div class="row"><button id="specialOpenFirstPlaylist" class="secondary">Open First Playlist</button></div>`);
+      }
+      box.innerHTML = parts.join("");
+
+      const playAll = document.getElementById("specialPlayAll");
+      if (playAll) playAll.onclick = () => playUris(sp.tracks.map(t => t.uri));
+
+      const startStations = document.getElementById("specialStartStations");
+      if (startStations) startStations.onclick = () => {
+        const a = sp.artists[0];
+        if (a?.id) navigate(`/station/artist/${a.id}`);
+      };
+
+      const openFirstPlaylist = document.getElementById("specialOpenFirstPlaylist");
+      if (openFirstPlaylist) openFirstPlaylist.onclick = () => {
+        const p = sp.playlists[0];
+        if (p?.id) navigate(`/playlist/${p.id}`);
+      };
+    }
+
+    function renderHistory() {
+      const el = document.getElementById("historyGrid");
+      if (!el) return;
+      el.innerHTML = "";
+      history.slice(-20).reverse().forEach(h => {
+        const c = document.createElement("div");
+        c.className = "card";
+        c.innerHTML = `
+          <h3>${h.name}</h3>
+          <div class="muted">${h.artist || ""}</div>
+          <div class="row">
+            <button class="link">Open Track</button>
+            <button class="secondary">Share</button>
+          </div>
+        `;
+        c.querySelector("button.link").onclick = () => navigate(`/track/${h.id}`);
+        c.querySelector("button.secondary").onclick = () => copyText(viewUrl(`/track/${h.id}`));
+        el.appendChild(c);
+      });
+    }
+
+    // =============================
+    // Player and feedback operations
+    // =============================
+
+    async function playUris(uris) {
+      // Ensure device selected
+      if (!currentDeviceId) await initPlayer();
+      await transferPlaybackToCurrentDevice();
+      await api("/me/player/play", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uris })
+      });
+    }
+
+    async function togglePlay() {
+      await api("/me/player/pause", { method: "PUT" }).catch(async () => {
+        await api("/me/player/play", { method: "PUT" });
+      });
+      await updateStationNowPlaying();
+    }
+
+    async function nextTrack() {
+      await api("/me/player/next", { method: "POST" });
+      await updateStationNowPlaying();
+    }
+
+    async function previousTrack() {
+      await api("/me/player/previous", { method: "POST" });
+      await updateStationNowPlaying();
+    }
+
+    async function likeCurrent() {
+      const cur = await getCurrentTrack();
+      if (cur?.id) await api(`/me/tracks?ids=${cur.id}`, { method: "PUT" });
+    }
+
+    async function dislikeCurrent() {
+      const cur = await getCurrentTrack();
+      if (cur?.id) await api(`/me/tracks?ids=${cur.id}`, { method: "DELETE" });
+      await nextTrack();
+    }
+
+    async function getCurrentTrack() {
+      const res = await api("/me/player/currently-playing");
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data?.item || null;
+    }
+
+    // =============================
+    // Specials loading
+    // =============================
+
+    async function loadSpecials() {
+      // Expecting a JSON at: https://camcookiem.github.io/music/specials.json
+      // Schema:
+      // { "list": [ { "slug": "holiday", "title": "Holiday Special", "description": "...", "tracks": [ {"uri":"spotify:track:..."} ], "artists": [ {"id":"..."} ], "playlists": [ {"id":"..."} ] } ] }
+      try {
+        const url = "https://camcookiem.github.io/music/specials.json";
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("No specials.json");
+        return await res.json();
+      } catch (e) {
+        // Fallback inline if no file present
+        return {
+          list: [
+            {
+              slug: "example",
+              title: "Example Special",
+              description: "Replace this by creating specials.json at /music/",
+              tracks: [],
+              artists: [],
+              playlists: []
+            }
+          ]
+        };
+      }
+    }
+
+    // =============================
+    // Wire UI events
+    // =============================
+
+    document.getElementById("loginBtn").onclick = login;
+    document.getElementById("logoutBtn").onclick = logout;
+
+    document.getElementById("homeBtn").onclick = () => navigate("/");
+
+    document.getElementById("openPlayerBtn").onclick = async () => {
+      await api("/me/player/play", { method: "PUT" }).catch(() => {});
+    };
+    document.getElementById("pausePlayerBtn").onclick = () => api("/me/player/pause", { method: "PUT" });
+    document.getElementById("nextTrackBtn").onclick = nextTrack;
+    document.getElementById("previousTrackBtn").onclick = previousTrack;
+
+    document.getElementById("createStationBtn").onclick = () => {
+      const seedType = document.getElementById("seedType").value;
+      const seed = document.getElementById("seedInput").value.trim();
+      if (!seed) return;
+      // For artist/track seeds: if input is not an ID, treat it as query and create URL with the query
+      navigate(`/station/${seedType}/${encodeURIComponent(seed)}`);
+    };
+
+    // Copy share URL buttons
+    document.getElementById("copyStationUrlBtn").onclick = () => {
+      const el = document.getElementById("stationShareUrl");
+      copyText(el.textContent);
+    };
+    document.getElementById("copyArtistUrlBtn").onclick = () => {
+      const el = document.getElementById("artistShareUrl");
+      copyText(el.textContent);
+    };
+    document.getElementById("copyTrackUrlBtn").onclick = () => {
+      const el = document.getElementById("trackShareUrl");
+      copyText(el.textContent);
+    };
+    document.getElementById("copyPlaylistUrlBtn").onclick = () => {
+      const el = document.getElementById("playlistShareUrl");
+      copyText(el.textContent);
+    };
+    document.getElementById("copySpecialUrlBtn").onclick = () => {
+      const el = document.getElementById("specialShareUrl");
+      copyText(el.textContent);
+    };
+
+    // =============================
+    // Boot
+    // =============================
+
+    (async function boot() {
+      ensureToken(); // may prompt login, or read token from hash
+      await render();
+    })();
+  </script>
+</body>
+</html>
