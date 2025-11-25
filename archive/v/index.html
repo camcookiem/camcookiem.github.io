@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Archive Radio - IN EDIT - Camcookie Music</title>
+  <style>
+    .content {
+      height: 100%;
+      width: 99%;
+      border: solid #0099ff;
+      border-radius: 10px;
+      padding: 5px;
+      margin-left: 3px;
+      margin-right: 3px;
+    }
+    .header {
+      color: #0099ff;
+    }
+    .Topbar {
+      width: 100%;
+      height: 50px;
+      background-color: #0099ff;
+      color: #ffffff;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    .Topbarlink {
+      color: #ffffff;
+      text-decoration: none;
+    }
+    .Topbarspace {
+      color: #ffffff;
+    }
+    .links {
+      color: #0099ff;
+      text-decoration: none;
+    }
+    .topimage {
+      width: 100%;
+      height: auto;
+    }
+    body { font-family: sans-serif; margin: 20px; }
+  </style>
+</head>
+<body>
+<div class="Topbar"><h1>Archive Radio</h1></div>
+<div class="content">
+<p>This page is in edit!<br>
+<p>WARNING: Camcookie Has no control of waut the Archive Plays! Use at your owln risk!</p>
+<p>This uses Archive.org API! Go cheack out ware these songs come from at <a href="https://archive.org">archive.org</a></p>
+<button onclick="grantAccess()">I understand Camcookie Music has no control of waut the Archive Radio plays</button>
+</div>
+<p>Copyright 2025 by Camcookie Music</p>
+  <script>
+    window.onload = () => {
+      // If the key already exists, skip this page entirely
+      if (localStorage.getItem("accessKey")) {
+        window.location.href = "https://camcookiem.github.io/archive/";
+        return;
+      }
+    };
+
+    function grantAccess() {
+      // Save the key
+      localStorage.setItem("accessKey", "true");
+
+      // Redirect to the protected page
+      window.location.href = "https://camcookiem.github.io/archive/";
+    }
+  </script>
+</body>
+</html>

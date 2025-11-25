@@ -2,38 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Archive Radio</title>
+  <title>Archive Radio - IN EDIT - Camcookie Music</title>
   <style>
+    .content {
+      height: 100%;
+      width: 99%;
+      border: solid #0099ff;
+      border-radius: 10px;
+      padding: 5px;
+      margin-left: 3px;
+      margin-right: 3px;
+    }
+    .header {
+      color: #0099ff;
+    }
+    .Topbar {
+      width: 100%;
+      height: 50px;
+      background-color: #0099ff;
+      color: #ffffff;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    .Topbarlink {
+      color: #ffffff;
+      text-decoration: none;
+    }
+    .Topbarspace {
+      color: #ffffff;
+    }
+    .links {
+      color: #0099ff;
+      text-decoration: none;
+    }
+    .topimage {
+      width: 100%;
+      height: auto;
+    }
     body { font-family: sans-serif; margin: 20px; }
     #controls button { margin: 5px; padding: 10px; }
     svg { width: 20px; height: 20px; vertical-align: middle; }
     #share-box {
-      display: none;
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-top: 10px;
+    display: none;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: #ffffff;
+    z-index: 9000;
+    width: 100%;
+    height: 100%;
+    padding: 40px;
     }
     #share-link { word-break: break-all; }
+    button {color: #ffffff; background: #0099ff; padding: 10px; font-size: 20px; border: 2px solid #0000ff; border-radius: 3px;}
+    #now-playing {
+      border: 2px solid #0099ff; border-radius: 5px; padding: 5px width: 100%;
+    }
+    #player {
+    border: 2px solid #0099ff; border-radius: 25px; width: 99.90%; height: 50px;
+    }
   </style>
 </head>
 <body>
-  <h1>Archive Radio</h1>
+<div class="Topbar"><h1>Archive Radio</h1></div>
 <p>IN EDIT!<br>Want to use? Look at the URL above and then at the end of the url tipe q= and then enter wautever you want to lisen to.<br>For example the url will look like: https://camcookiem.github.io/music/archive/?q=EXAMPLE THING</p><p>WARNING: Camcookie Has no control of waut the Archive Plays! Use at your owln risk!</p><p>This uses Archive.org API! Go cheack out ware these songs come from at archive.org</p>
+<div class="content">
 <br>
-  <div id="now-playing">Nothing playing</div>
-  <audio id="player" controls></audio>
-
+<center><div id="now-playing">Nothing playing</div></center>
+<center><audio id="player" controls></audio></center>
+<center>
   <div id="controls">
     <button id="toggle"><svg><use href="#ic-play"/></svg> Play</button>
     <button id="skip"><svg><use href="#ic-skip"/></svg> Skip</button>
     <button id="replay"><svg><use href="#ic-replay"/></svg> Replay Last</button>
     <button id="share"><svg><use href="#ic-share"/></svg> Share</button>
   </div>
+</center>
 
   <!-- Share box -->
   <div id="share-box">
-    <div id="share-link"></div>
+    <p>Link: 
+    <div id="share-link"></div></p>
     <button id="close-share">Close</button>
+    <p>This function is still in edit! This will not work!</p>
   </div>
 
   <!-- SVG icons -->
@@ -44,8 +95,9 @@
     <symbol id="ic-replay" viewBox="0 0 24 24"><path fill="currentColor" d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6a6 6 0 1 1-12 0H4a8 8 0 1 0 16 0c0-4.42-3.58-8-8-8z"/></symbol>
     <symbol id="ic-share" viewBox="0 0 24 24"><path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.2 3.2 0 0 0 0-1.39l7.05-4.11A3 3 0 1 0 17 5a3 3 0 0 0-2.91 2.09L7.05 11.2A3 3 0 1 0 6 19a3 3 0 0 0 2.91-2.09l7.14-4.17c.52.48 1.2.78 1.95.78a3 3 0 1 0 0-6"/></symbol>
   </svg>
-
-  <script>
+</div>
+<p>Copyright 2025 by Camcookie Music</p>
+<script>
     const player = document.getElementById('player');
     const nowPlaying = document.getElementById('now-playing');
     const toggleBtn = document.getElementById('toggle');
@@ -169,6 +221,17 @@
       }
       if (queue.length) playDoc(queue.shift());
     })();
+</script>
+  <script>
+    // Run as soon as the page loads
+    window.onload = () => {
+      const hasKey = localStorage.getItem("accessKey");
+
+      if (!hasKey) {
+        // Redirect if the key doesn't exist
+        window.location.href = "https://camcookiem.github.io/archive/v/";
+      }
+    };
   </script>
 </body>
 </html>
