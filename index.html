@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Archive Radio - IN EDIT - Camcookie Music</title>
+  <style>
+    .content {
+      height: 100%;
+      width: 99%;
+      border: solid #FFA500;
+      border-radius: 10px;
+      padding: 5px;
+      margin-left: 3px;
+      margin-right: 3px;
+    }
+    .header {
+      color: #FFA500;
+    }
+    .Topbarlink {
+      color: #ffffff;
+      text-decoration: none;
+    }
+    .Topbarspace {
+      color: #ffffff;
+    }
+    .links {
+      color: #FFA500;
+      text-decoration: none;
+    }
+    .topimage {
+      width: 100%;
+      height: auto;
+    }
+    body { font-family: sans-serif; margin: 20px; }
+.Topbar {
+  width: 100%;
+  height: 50px;
+  background-color: #FFA500;
+  color: #ffffff;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.topbar-inner {
+  display: flex;
+  justify-content: space-between; /* title left, search right */
+  align-items: center;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.top-title {
+  margin: 0;
+  font-size: 24px;
+}
+
+.search-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.search-input {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.search-button {
+  padding: 8px 14px;
+  border: none;
+  background: #0078ff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.search-button:hover {
+  background: #005fcc;
+}
+  </style>
+</head>
+<body>
+<div class="Topbar">
+  <div class="topbar-inner">
+    <h1 class="top-title">
+      <a class="Topbarlink" href="https://camcookiem.github.io/">Camcookie Music</a>
+    </h1>
+    <div class="search-container">
+      <input id="query" class="search-input" type="text" placeholder="Search Archive..." />
+      <button class="search-button" onclick="goToArchive()">Go</button>
+    </div>
+  </div>
+</div>
+<div class="content">
+</div>
+<p>Copyright 2025 by Camcookie Music</p>
+  <script>
+    function goToArchive() {
+      const input = document.getElementById("query").value;
+      const encoded = encodeURIComponent(input);
+      window.location.href = `https://camcookiem.github.io/archive/?q=${encoded}`;
+    }
+  </script>
+</body>
+</html>
+</body>
+</html>
