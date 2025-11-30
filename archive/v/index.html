@@ -121,5 +121,12 @@
       window.location.href = "https://camcookiem.github.io/archive/";
     }
   </script>
+<script>
+    function goToArchive() {
+      const input = document.getElementById("query").value;
+      const encoded = encodeURIComponent(input);
+      window.location.href = `https://camcookiem.github.io/archive/?q=${encoded}`;
+    }
+</script>
 </body>
 </html>
