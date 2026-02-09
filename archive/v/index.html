@@ -2,131 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Archive Radio - IN EDIT - Camcookie Music</title>
+  <title>Archive Radio - Camcookie Music</title>
+
+  <!-- Global Camcookie Music Styles -->
+  <link rel="stylesheet" href="https://camcookiem.github.io/styles.css">
+
+  <!-- Extra Page Styles -->
   <style>
-    .content {
-      height: 100%;
-      width: 99%;
-      border: solid #FFA500;
+    .warning-box {
+      border: 2px solid #FFA500;
       border-radius: 10px;
-      padding: 5px;
-      margin-left: 3px;
-      margin-right: 3px;
+      padding: 15px;
+      margin: 15px auto;
+      width: 95%;
+      font-size: 16px;
     }
-    .header {
-      color: #FFA500;
+
+    .warning-box p {
+      margin: 8px 0;
     }
-.Topbar {
-  width: 100%;
-  height: 50px;
-  background-color: #FFA500;
-  color: #ffffff;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  display: flex;
-  align-items: center;
-}
 
-.topbar-inner {
-  display: flex;
-  justify-content: space-between; /* title left, search right */
-  align-items: center;
-  width: 100%;
-  padding: 0 10px;
-}
-
-.top-title {
-  margin: 0;
-  font-size: 24px;
-}
-
-.search-container {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.search-input {
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.search-button {
-  padding: 8px 14px;
-  border: none;
-  background: #0078ff;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.search-button:hover {
-  background: #005fcc;
-}
-    .Topbarlink {
-      color: #ffffff;
-      text-decoration: none;
+    .agree-btn {
+      background: #FFA500;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
     }
-    .Topbarspace {
-      color: #ffffff;
+
+    .agree-btn:hover {
+      background: #cc8400;
     }
-    .links {
-      color: #FFA500;
-      text-decoration: none;
-    }
-    .topimage {
-      width: 100%;
-      height: auto;
-    }
-    body { font-family: sans-serif; margin: 20px; }
   </style>
 </head>
+
 <body>
-<div class="Topbar">
-  <div class="topbar-inner">
-    <h1 class="top-title">
-      <a class="Topbarlink" href="https://camcookiem.github.io/">Camcookie Music</a>
-    </h1>
-    <div class="search-container">
-      <input id="query" class="search-input" type="text" placeholder="Search Archive..." />
-      <button class="search-button" onclick="goToArchive()">Go</button>
-    </div>
-  </div>
-</div>
-<br>
+
+<!-- TOPBAR (from global styles.css) -->
+<div class="Topbar"><div class="topbar-inner"><h1 class="top-title"><a class="Topbarlink" href="https://camcookiem.github.io/">Camcookie Music</a></h1><div class="search-container"><input id="query" class="search-input" type="text" placeholder="Search Archive..." /><button class="search-button" onclick="goToArchive()">Go</button></div></div></div>
+<!-- PAGE CONTENT -->
 <div class="content">
-<p>This page is in edit!<br>
-<p>WARNING: Camcookie Has no control of waut the Archive Plays! Use at your owln risk!</p>
-<p>This uses Archive.org API! Go cheack out ware these songs come from at <a href="https://archive.org">archive.org</a></p>
-<button class="links" onclick="grantAccess()">I understand Camcookie Music has no control of waut the Archive Radio plays</button>
+
+  <h1 class="header">Archive Radio Access</h1>
+
+  <div class="warning-box">
+    <p><strong>This page is in edit!</strong></p>
+
+    <p><strong>WARNING:</strong> Camcookie Music has <u>no control</u> over what Archive.org plays.  
+    Audio may include unexpected or random content.</p>
+
+    <p>This radio uses the Archive.org API.  
+    You can explore the source audio at  
+    <a class="links" href="https://archive.org">https://archive.org</a></p>
+
+    <button class="agree-btn" onclick="grantAccess()">
+      I understand and want to continue
+    </button>
+  </div>
+
 </div>
-<p>Copyright 2025 by Camcookie Music</p>
-  <script>
-    window.onload = () => {
-      // If the key already exists, skip this page entirely
-      if (localStorage.getItem("accessKey")) {
-        window.location.href = "https://camcookiem.github.io/";
-        return;
-      }
-    };
 
-    function grantAccess() {
-      // Save the key
-      localStorage.setItem("accessKey", "true");
+<p style="margin-left: 10px;">Copyright 2025 by Camcookie Music</p>
 
-      // Redirect to the protected page
-      window.location.href = "https://camcookiem.github.io/";
-    }
-  </script>
+<!-- Access Gate Logic -->
 <script>
-    function goToArchive() {
-      const input = document.getElementById("query").value;
-      const encoded = encodeURIComponent(input);
-      window.location.href = `https://camcookiem.github.io/archive/?q=${encoded}`;
+  window.onload = () => {
+    // If the key already exists, skip this page entirely
+    if (localStorage.getItem("accessKey")) {
+      window.location.href = "https://camcookiem.github.io/archive/";
+      return;
     }
+  };
+
+  function grantAccess() {
+    // Save the key
+    localStorage.setItem("accessKey", "true");
+
+    // Redirect to the protected page
+    window.location.href = "https://camcookiem.github.io/archive/";
+  }
+</script>
+
+<!-- Search Bar Logic -->
+<script>
+  function goToArchive() {
+    const input = document.getElementById("query").value;
+    const encoded = encodeURIComponent(input);
+    window.location.href = `https://camcookiem.github.io/archive/?q=${encoded}`;
+  }
 </script>
 </body>
 </html>
