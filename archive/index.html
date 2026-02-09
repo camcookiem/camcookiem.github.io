@@ -2,144 +2,120 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Archive Radio - IN EDIT - Camcookie Music</title>
+  <title>Archive Radio - Camcookie Music</title>
+
+  <!-- Global Camcookie Music Styles -->
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- Extra Player Styles -->
   <style>
-    .content {
-      height: 100%;
-      width: 99%;
-      border: solid #FFA500;
-      border-radius: 10px;
-      padding: 5px;
-      margin-left: 3px;
-      margin-right: 3px;
-    }
-    .header {
-      color: #FFA500;
-    }
-.Topbar {
-  width: 100%;
-  height: 50px;
-  background-color: #FFA500;
-  color: #ffffff;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  display: flex;
-  align-items: center;
-}
-
-.topbar-inner {
-  display: flex;
-  justify-content: space-between; /* title left, search right */
-  align-items: center;
-  width: 100%;
-  padding: 0 10px;
-}
-
-.top-title {
-  margin: 0;
-  font-size: 24px;
-}
-
-.search-container {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.search-input {
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.search-button {
-  padding: 8px 14px;
-  border: none;
-  background: #0078ff;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.search-button:hover {
-  background: #005fcc;
-}
-    .Topbarlink {
-      color: #ffffff;
-      text-decoration: none;
-    }
-    .Topbarspace {
-      color: #ffffff;
-    }
-    .links {
-      color: #FFA500;
-      text-decoration: none;
-    }
-    .topimage {
-      width: 100%;
-      height: auto;
-    }
-    body { font-family: sans-serif; margin: 20px; }
-    #controls button { margin: 5px; padding: 10px; }
-    svg { width: 20px; height: 20px; vertical-align: middle; }
-    #share-box {
-    display: none;
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    background-color: #ffffff;
-    z-index: 9000;
-    width: 100%;
-    height: 100%;
-    padding: 40px;
-    }
-    #share-link { word-break: break-all; }
-    button {color: #ffffff; background: #FFA500; padding: 10px; font-size: 20px; border: 2px solid #5B7C99; border-radius: 3px;}
+    /* Player UI */
     #now-playing {
-      border: 2px solid #FFA500; border-radius: 5px; padding: 5px width: 100%;
+      border: 2px solid #FFA500;
+      border-radius: 6px;
+      padding: 8px;
+      width: 90%;
+      max-width: 600px;
+      margin: 10px auto;
+      font-size: 18px;
+      text-align: center;
     }
+
     #player {
-    border: 2px solid #FFA500; border-radius: 25px; width: 99.90%; height: 50px;
+      width: 95%;
+      max-width: 650px;
+      border: 2px solid #FFA500;
+      border-radius: 20px;
+      margin: 10px auto;
+      display: block;
+    }
+
+    #controls button {
+      margin: 6px;
+      padding: 10px 14px;
+      background: #FFA500;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #controls button:hover {
+      background: #cc8400;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+
+    /* Share box */
+    #share-box {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: white;
+      width: 100%;
+      height: 100%;
+      padding: 40px;
+      z-index: 9000;
+      text-align: center;
+    }
+
+    #share-link {
+      word-break: break-all;
+      margin: 10px 0;
     }
   </style>
 </head>
+
 <body>
-<div class="Topbar">
-  <div class="topbar-inner">
-    <h1 class="top-title">
-      <a class="Topbarlink" href="https://camcookiem.github.io/">Camcookie Music</a>
-    </h1>
-    <div class="search-container">
-      <input id="query" class="search-input" type="text" placeholder="Search Archive..." />
-      <button class="search-button" onclick="goToArchive()">Go</button>
-    </div>
-  </div>
-</div>
-<p>IN EDIT!<br>Want to use? Look at the URL above and then at the end of the url tipe q= and then enter wautever you want to lisen to.<br>For example the url will look like: https://camcookiem.github.io/music/archive/?q=EXAMPLE THING</p><p>WARNING: Camcookie Has no control of waut the Archive Plays! Use at your owln risk!</p><p>This uses Archive.org API! Go cheack out ware these songs come from at archive.org</p>
+
+<!-- TOPBAR (from global styles.css) -->
+<div class="Topbar"><div class="topbar-inner"><h1 class="top-title"><a class="Topbarlink" href="https://camcookiem.github.io/">Camcookie Music</a></h1><div class="search-container"><input id="query" class="search-input" type="text" placeholder="Search Archive..." /><button class="search-button" onclick="goToArchive()">Go</button></div></div></div>
+
+
+<!-- PAGE CONTENT -->
 <div class="content">
-<br>
-<center><div id="now-playing">Nothing playing</div></center>
-<center><audio id="player" controls></audio></center>
-<center>
-  <div id="controls">
-    <button id="toggle"><svg><use href="#ic-play"/></svg> Play</button>
-    <button id="skip"><svg><use href="#ic-skip"/></svg> Skip</button>
-    <button id="replay"><svg><use href="#ic-replay"/></svg> Replay Last</button>
-    <button id="share"><svg><use href="#ic-share"/></svg> Share</button>
-  </div>
-</center>
 
-  <!-- Share box -->
+  <h1 class="header">Archive Radio</h1>
+
+  <p><strong>IN EDIT!</strong><br>
+  Want to use it? Add <code>?q=YOUR SEARCH</code> to the URL.<br>
+  Example: <code>https://camcookiem.github.io/music/archive/?q=jazz</code></p>
+
+  <p><strong>Warning:</strong> Camcookie has no control over what Archive.org plays.</p>
+  <p>This uses the Archive.org API. Check out where the audio comes from at <a class="links" href="https://archive.org">archive.org</a></p>
+
+  <!-- Now Playing -->
+  <div id="now-playing">Nothing playing</div>
+
+  <!-- Audio Player -->
+  <audio id="player" controls></audio>
+
+  <!-- Controls -->
+  <center>
+    <div id="controls">
+      <button id="toggle"><svg><use href="#ic-play"/></svg>Play</button>
+      <button id="skip"><svg><use href="#ic-skip"/></svg>Skip</button>
+      <button id="replay"><svg><use href="#ic-replay"/></svg>Replay</button>
+      <button id="share"><svg><use href="#ic-share"/></svg>Share</button>
+    </div>
+  </center>
+
+  <!-- Share Box -->
   <div id="share-box">
-    <p>Link: 
-    <div id="share-link"></div></p>
+    <h2>Share This Track</h2>
+    <div id="share-link"></div>
     <button id="close-share">Close</button>
-    <p>This function is still in edit! This will not work!</p>
+    <p>This feature is still in edit.</p>
   </div>
 
-  <!-- SVG icons -->
+  <!-- SVG Icons -->
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
     <symbol id="ic-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></symbol>
     <symbol id="ic-pause" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19h4V5H6zm8-14v14h4V5z"/></symbol>
@@ -147,150 +123,22 @@
     <symbol id="ic-replay" viewBox="0 0 24 24"><path fill="currentColor" d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6a6 6 0 1 1-12 0H4a8 8 0 1 0 16 0c0-4.42-3.58-8-8-8z"/></symbol>
     <symbol id="ic-share" viewBox="0 0 24 24"><path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.2 3.2 0 0 0 0-1.39l7.05-4.11A3 3 0 1 0 17 5a3 3 0 0 0-2.91 2.09L7.05 11.2A3 3 0 1 0 6 19a3 3 0 0 0 2.91-2.09l7.14-4.17c.52.48 1.2.78 1.95.78a3 3 0 1 0 0-6"/></symbol>
   </svg>
+
 </div>
-<p>Copyright 2025 by Camcookie Music</p>
+
+<p style="margin-left: 10px;">Copyright 2025 by Camcookie Music</p>
+
+<!-- Radio Logic -->
+<script src="https://camcookiem.github.io/archive/radio.js"></script>
+
+<!-- Topbar Logic -->
 <script>
-    const player = document.getElementById('player');
-    const nowPlaying = document.getElementById('now-playing');
-    const toggleBtn = document.getElementById('toggle');
-    const skipBtn = document.getElementById('skip');
-    const replayBtn = document.getElementById('replay');
-    const shareBtn = document.getElementById('share');
-    const shareBox = document.getElementById('share-box');
-    const shareLink = document.getElementById('share-link');
-    const closeShare = document.getElementById('close-share');
-
-    let queue = [];
-    let currentDoc = null;
-    let lastDoc = null;
-    let page = 1;
-
-    // Get ?q= and ?s= from URL
-    const params = new URLSearchParams(location.search);
-    const q = params.get('q') || 'music';
-    const s = params.get('s');
-
-    async function fetchMore() {
-      const url = 'https://archive.org/advancedsearch.php?' + new URLSearchParams({
-        q: `(${q}) AND mediatype:(audio)`,
-        output: 'json',
-        rows: '1',
-        page: page++,
-        sort: 'downloads desc'
-      });
-      const res = await fetch(url);
-      const data = await res.json();
-      const docs = data.response.docs;
-      if (docs.length) queue.push(docs[0]);
-    }
-
-    async function resolveAudio(identifier) {
-      const metaURL = `https://archive.org/metadata/${identifier}`;
-      const res = await fetch(metaURL);
-      const meta = await res.json();
-      const file = meta.files.find(f => /\.(mp3|ogg|wav|flac)$/i.test(f.name));
-      return file ? `https://archive.org/download/${identifier}/${file.name}` : '';
-    }
-
-    async function playDoc(doc) {
-      if (!doc) return;
-      lastDoc = currentDoc;
-      currentDoc = doc;
-      nowPlaying.textContent = doc.title || doc.identifier;
-      const src = await resolveAudio(doc.identifier);
-      player.src = src;
-      player.play();
-      updateToggleButton();
-      fetchMore(); // always add one more for endless play
-    }
-
-    function updateToggleButton() {
-      if (player.paused) {
-        toggleBtn.innerHTML = '<svg><use href="#ic-play"/></svg> Play';
-      } else {
-        toggleBtn.innerHTML = '<svg><use href="#ic-pause"/></svg> Pause';
-      }
-    }
-
-    // Controls
-    toggleBtn.addEventListener('click', () => {
-      if (!player.src && queue.length) {
-        playDoc(queue.shift());
-      } else if (player.paused) {
-        player.play();
-      } else {
-        player.pause();
-      }
-      updateToggleButton();
-    });
-
-    skipBtn.addEventListener('click', () => {
-      if (queue.length) playDoc(queue.shift());
-    });
-
-    replayBtn.addEventListener('click', () => {
-      if (lastDoc) playDoc(lastDoc);
-    });
-
-    player.addEventListener('play', updateToggleButton);
-    player.addEventListener('pause', updateToggleButton);
-
-    // Auto-advance forever
-    player.addEventListener('ended', () => {
-      if (queue.length) {
-        playDoc(queue.shift());
-      } else {
-        fetchMore().then(() => {
-          if (queue.length) playDoc(queue.shift());
-        });
-      }
-    });
-
-    // Share button logic
-    shareBtn.addEventListener('click', () => {
-      if (!currentDoc) return;
-      const base = location.origin + location.pathname;
-      const link = `${base}?s=${encodeURIComponent(currentDoc.identifier)}&q=${encodeURIComponent(q)}`;
-      shareLink.textContent = link;
-      shareBox.style.display = 'block';
-    });
-
-    closeShare.addEventListener('click', () => {
-      shareLink.textContent = '';
-      shareBox.style.display = 'none';
-    });
-
-    // Initial seed
-    (async function init() {
-      await fetchMore();
-      if (s) {
-        // Play shared song first
-        const doc = queue.find(d => d.identifier === s);
-        if (doc) {
-          await playDoc(doc);
-          return;
-        }
-      }
-      if (queue.length) playDoc(queue.shift());
-    })();
+  function goToArchive() {
+    const input = document.getElementById("query").value;
+    const encoded = encodeURIComponent(input);
+    window.location.href = `https://camcookiem.github.io/archive/?q=${encoded}`;
+  }
 </script>
-  <script>
-    // Run as soon as the page loads
-    window.onload = () => {
-      const hasKey = localStorage.getItem("accessKey");
 
-      if (!hasKey) {
-        // Redirect if the key doesn't exist
-        window.location.href = "https://camcookiem.github.io/archive/v/";
-      }
-    };
-  </script>
-<script>
-    function goToArchive() {
-      const input = document.getElementById("query").value;
-      const encoded = encodeURIComponent(input);
-      window.location.href = `https://camcookiem.github.io/archive/?q=${encoded}`;
-    }
-</script>
 </body>
 </html>

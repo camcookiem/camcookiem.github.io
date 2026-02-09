@@ -3,44 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <title>Home - Camcookie Music</title>
-  <link rel="icon" href="https://camcookie876.github.io/logo.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-<!-- TOPBAR -->
-<div class="Topbar"><div class="Topbar-inner"><a href="https://camcookiem.github.io/" class="Topbar-logo"><img src="https://camcookiem.github.io/logo.png" alt="Camcookie Logo"></a><div class="Topbar-links"></div><div class="Topbar-right"><div class="Topbar-menu-btn">|||</div></div></div><div class="Topbar-dropdown"></div></div>
 
-<!-- PAGE TITLE -->
-<center><h1 class="header">Camcookie Music</h1></center>
+<div class="Topbar"><div class="topbar-inner"><h1 class="top-title"><a class="Topbarlink" href="https://camcookiem.github.io/">Camcookie Music</a></h1><div class="search-container"><input id="query" class="search-input" type="text" placeholder="Search Archive..." /><button class="search-button" onclick="goToArchive()">Go</button></div></div></div>
 
-<!-- CONTENT BOX -->
 <div class="content">
-
-  <h2 class="header">Welcome to Camcookie Music</h2>
+  <h1 class="header">Welcome to Camcookie Music</h1>
   <p>Camcookie Music is a Camcookie Project. Find other Camcookie projects at 
     <a class="links" href="https://camcookie876.github.io">https://camcookie876.github.io</a>
   </p>
 
-  <h2 class="header">Archive Radio</h2>
-  <p>Using the Archive.org audio API, Camcookie made a radio!</p>
-  <p>This radio may not always find the exact results you want, but if you click Skip a few times, you may find what you're looking for.</p>
+  <h1 class="header">Archive Radio</h1>
+  <p>Using the Archive music API, Camcookie made a radio!</p>
+  <p>This radio may not always find the results you want, but if you click Skip a few times, you may find what you're looking for.</p>
 
-  <p>Before using the radio, please go to  
+  <p>Before using this radio, please go to  
     <a class="links" href="https://camcookiem.github.io/archive/v/">https://camcookiem.github.io/archive/v/</a>  
     to enable the radio.
   </p>
 
-  <!-- SEARCH BAR -->
   <div class="search-container">
-    <input id="query" class="search-input" type="text" placeholder="Search Archive..." />
-    <button class="search-button" id="searchBtn">Go</button>
+    <input id="query2" class="search-input" type="text" placeholder="Search Archive..." />
+    <button class="search-button" onclick="goToArchive2()">Go</button>
   </div>
-
 </div>
 
-<p>Copyright 2025 by Camcookie Music</p>
+<p style="margin-left: 10px;">Copyright 2025 by Camcookie Music</p>
 
-<script src="script.js"></script>
+<script>
+  function goToArchive() {
+    const input = document.getElementById("query").value;
+    const encoded = encodeURIComponent(input);
+    window.location.href = `https://camcookiem.github.io/archive/?q=${encoded}`;
+  }
+
+  function goToArchive2() {
+    const input = document.getElementById("query2").value;
+    const encoded = encodeURIComponent(input);
+    window.location.href = `https://camcookiem.github.io/archive/?q=${encoded}`;
+  }
+</script>
+
 </body>
 </html>
