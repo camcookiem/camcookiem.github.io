@@ -31,10 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainLinks = [
     { name: "Home", url: "https://camcookiem.github.io/" },
     { name: "Radio", url: "https://camcookiem.github.io/archive/v/" },
-    { name: "DOCS", url: "https://camcookie876.github.io/DOCS/" },
-    { name: "Games", url: "https://camcookieg.github.io/" },
-    { name: "Books", url: "https://camcookieb.github.io/" },
-    { name: "Connect", url: "https://camcookie876.github.io/connect/" }
+    { name: "Connect 26", url: "https://camcookie876.github.io/connect/" }
   ];
 
   const linkContainer = document.querySelector(".Topbar-links");
