@@ -138,12 +138,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const link = `${base}?s=${encodeURIComponent(currentDoc.identifier)}&q=${encodeURIComponent(q)}`;
 
     shareLink.textContent = link;
-    shareBox.style.display = "block";
+    shareBox.classList.add("active");
   });
 
   closeShare.addEventListener("click", () => {
-    shareBox.style.display = "none";
+    shareBox.classList.remove("active");
     shareLink.textContent = "";
+  });
+
+  // Close share box when clicking outside the modal
+  shareBox.addEventListener("click", (e) => {
+    if (e.target === shareBox) {
+      shareBox.classList.remove("active");
+      shareLink.textContent = "";
+    }
   });
 
   // ============================
